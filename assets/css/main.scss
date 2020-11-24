@@ -1,0 +1,26 @@
+---
+# Let's add a comment to make this file sass-y.
+# Change this file for any custom CSS.
+---
+
+/* We need to add display:inline in order to align the '>>' of the 'read more' link */
+.post-excerpt p {
+	display:inline;
+}
+
+// Import partials from `sass_dir` (defaults to `_sass`)
+@import
+	"syntax"
+;
+
+
+.contact {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 300;
+    letter-spacing: 0.01rem;
+}
+
+.contact a {
+	color: #0064a8;
+}
