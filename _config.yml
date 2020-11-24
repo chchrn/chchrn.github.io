@@ -5,7 +5,7 @@ meta_description: "Andrey Chicherin, ios developer, teamlead, windy.app"
 markdown: kramdown
 highlighter: rouge
 logo: false
-paginate: 1
+paginate: 15
 baseurl: /
 domain_name: "http://chchrn.com"
 google_analytics: "UA-XXXXXXXX-X"
