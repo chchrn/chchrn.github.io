@@ -2,35 +2,23 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title></title>
-    <description>Тимлид в Windy.app</description>
+    <description></description>
     <link>http://localhost:4000//</link>
     <atom:link href="http://localhost:4000//feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 24 Nov 2020 19:56:44 +0700</pubDate>
-    <lastBuildDate>Tue, 24 Nov 2020 19:56:44 +0700</lastBuildDate>
+    <pubDate>Wed, 25 Nov 2020 11:21:10 +0700</pubDate>
+    <lastBuildDate>Wed, 25 Nov 2020 11:21:10 +0700</lastBuildDate>
     <generator>Jekyll v4.1.1</generator>
     
       <item>
         <title>Логирование</title>
         <description>&lt;p&gt;При разработке любого приложения возникает потребность выводить отладочные логи в консоль. Это могут быть ошибки или просто детали выполнения приложения.&lt;/p&gt;
 
-&lt;p&gt;Часто в коде используют просто &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NSLog&lt;/code&gt;/&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;print()&lt;/code&gt;, но такое решение далеко от идеального. Есть популярная библиотека CocoaLumberjack. Долгое время я  использовал её, но всё логирование завязывается на статические методы или макросы, которые дергаются из любого метода/класса.&lt;/p&gt;
+&lt;p&gt;Часто в коде используют просто &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NSLog&lt;/code&gt;/&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;print()&lt;/code&gt;, но такое решение далеко от идеального. Есть популярная библиотека CocoaLumberjack. Долгое время я использовал её, но всё логирование завязывается на статические методы или макросы, которые дергаются из любого метода/класса.&lt;/p&gt;
 
-&lt;p&gt;Это распространенный подход, но совсем не объектно-ориентированный и не очень расширяемый. Например, чтобы разделить потоки логов от разных подсистем - придется както завязывать на константы в лог-сообщениях. Либо создавать новые макросы/статические методы.&lt;/p&gt;
+&lt;p&gt;Это распространенный подход, но совсем не объектно-ориентированный и не расширяемый. Чтобы разделить потоки логов от разных подсистем - придется както завязывать на константы в лог-сообщениях. Либо создавать новые макросы/статические методы.&lt;/p&gt;
 
-&lt;p&gt;Напрашивается решение - передавать некоторый объект через который будут логироваться все сообщения. Если попытаться сделать это на основе CocoaLumberjack, то придется вызывать вот такой метод для логирования:&lt;/p&gt;
+&lt;p&gt;Напрашивается решение - передавать некоторый объект через который будут логироваться все сообщения. Например, вот такой:&lt;/p&gt;
 
-&lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;BOOL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;asynchronous&lt;/span&gt;
-      &lt;span class=&quot;nv&quot;&gt;level&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;DDLogLevel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;level&lt;/span&gt;
-       &lt;span class=&quot;nv&quot;&gt;flag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;DDLogFlag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;flag&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;NSInteger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;
-       &lt;span class=&quot;nv&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;
-   &lt;span class=&quot;nv&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;function&lt;/span&gt;
-       &lt;span class=&quot;nv&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;NSUInteger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;
-        &lt;span class=&quot;nv&quot;&gt;tag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__nullable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tag&lt;/span&gt;
-     &lt;span class=&quot;nv&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;NSString&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NS_FORMAT_FUNCTION&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Не хотелось использовать по всему коду такой сложный метод. Интерфейс красивее может выглядеть вот так:&lt;/p&gt;
 &lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;protocol&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;WlgLogEvent&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;level&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;WlgLogLevel&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
@@ -49,16 +37,15 @@
     &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;level&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;WlgLogLevel&lt;/span&gt;
     &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;
 
-    &lt;span class=&quot;kd&quot;&gt;@objc&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;level&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;WlgLogLevel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;level&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;WlgLogLevel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
         &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;level&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;level&lt;/span&gt;
         &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Теперь, чтобы залогировать некоторые операции можно просто передавать инстанс класса реализующего &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WlgLog&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Теперь, чтобы залогировать некоторые операции можно просто передавать инстанс класса реализующего &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WlgLog&lt;/code&gt;:&lt;/p&gt;
 
-&lt;p&gt;Например, вот так:&lt;/p&gt;
 &lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;DownloadOperation&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;WldLog&lt;/span&gt;
     &lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;URL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;WldLog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
@@ -71,7 +58,7 @@
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Чтобы залогировать события можно реализовать интерфейс WlgLog через os_log, примерно вот так:&lt;/p&gt;
+&lt;p&gt;Чтобы залогировать события можно создать класс &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WlgOsLog&lt;/code&gt;, который внутри себя будет использовать &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;os_log&lt;/code&gt;, примерно вот так:&lt;/p&gt;
 
 &lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;WlgOsLog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;WlgLog&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;subsystem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;
@@ -113,7 +100,7 @@
 
 &lt;p&gt;В этом коде можно инстанцировать &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WlgOsLog&lt;/code&gt; с конкретной подсистемой и категорией. Тем самым упростив анализ логов в Console.app. При этом ничего не мешает использовать декорирование логгеров. И например, написать логгер отправляющий ошибки в Sentry/Firebase.&lt;/p&gt;
 
-&lt;p&gt;Чтобы не выводить ошибки в лог можно реализовать некоторый &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WlgNullLog&lt;/code&gt; , который не пишет никуда. Тогда в конструкторе объекта можно указывать дефолтную реализацию:&lt;/p&gt;
+&lt;p&gt;Чтобы не выводить ошибки в лог потребуется &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WlgNullLog&lt;/code&gt;, который не пишет никуда. Тогда в конструкторе объекта можно указывать дефолтную реализацию:&lt;/p&gt;
 
 &lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;DownloadOperation&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;WldLog&lt;/span&gt;
@@ -123,6 +110,7 @@
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
+&lt;p&gt;Такой подход реализован в библиотеке &lt;a href=&quot;https://github.com/chchrn/wlog&quot;&gt;Wlog&lt;/a&gt;&lt;/p&gt;
 </description>
         <pubDate>Sun, 08 Mar 2020 00:00:00 +0700</pubDate>
         <link>http://localhost:4000//2020/03/08/logs.html</link>
@@ -132,31 +120,129 @@
       </item>
     
       <item>
-        <title>Welcome to Jekyll!</title>
-        <description>&lt;p&gt;You’ll find this post in your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory - edit this post and re-build (or run with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-w&lt;/code&gt; switch) to see your changes!
-To add new posts, simply add a file in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory that follows the convention: YYYY-MM-DD-name-of-post.ext.&lt;/p&gt;
+        <title>Форстер. Сделай это завтра</title>
+        <description>&lt;p&gt;&lt;img src=&quot;./assets/images/forster-do_it_tomorrow/book.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Jekyll also offers powerful support for code snippets:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Прокачать “порядок”&lt;br /&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Эффективность = Творчество x Порядок   &lt;/code&gt;  &lt;br /&gt;
+Идея в том, что работать над творчеством можно, но сложнее. Порядок и организованность же можно прокачать до 10 довольно просто. Значит, что при творчество в 7 будет 70% эффективности.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Закрытые списки дел  &lt;br /&gt;
+У большинства руководителей и предпренимателей огромные списки дел, до конца которых они не добираются. А значит что работа никогда не кончится и всегда будет ощущение, что ничего не успел. Выход - вести закрытые списки дел. Если возникают неотложные дела, которые нужно сделать обязательно сегодня, то они записываются под чертой закрытого списка. Остальные же дела записываются на завтра.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Порядок не важен &lt;br /&gt;
+Приоритезация и списки дел с сортировкой по важности не умешьнают количество работы. Если работа из конца списка насколько неважна, что можно её не делать, то для чего её выполнять в принципе? Если делать придется, то какая разница в каком порядке делать дела? Идея в том, что если есть ограниченный пулл работы, то очень часто нет разницы в каком порядке её выполнять. А списки с “важными” пунктами не помогают справиться с проблемой, а только подталкивают взять на себя дополнительные обязательства.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Контрольный день &lt;br /&gt;
+Полезное упражнение - взять контрольный день и посмотреть сколько работы поступает за день. нужно записывать кажду задачу, которую получаешь, вне зависимости выполянем её или нет. В конце дня надо оценить сколько работы поступает за день. Нужно понять что в среднем такое колво дел будет поступать каждый день и оценить способен ли справляться с ними.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Актуальная инициатива&lt;/p&gt;
+    &lt;blockquote&gt;
+      &lt;p&gt;Чтобы двигаться вперед, необходимо выделять время на активные действия и проявление инициативы.&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hi, &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Tom'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints 'Hi, Tom' to STDOUT.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;Каждый день должен начинать с одного дела, которое очень важно. Дело, к которому нужно приступать до дейли, разбора электронной почты и тд.&lt;/p&gt;
 
-&lt;p&gt;Check out the &lt;a href=&quot;http://jekyllrb.com&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/mojombo/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Делать&lt;/li&gt;
+  &lt;li&gt;В первую очередь&lt;/li&gt;
+  &lt;li&gt;Каждый день&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;em&gt;Делать&lt;/em&gt; - нужно начинать и делать хотя бы 5 минут в день&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;В первую очередь&lt;/em&gt; - начинать делать в начале дня, до планерки, чтения почты, встречи с коллегами и распития утреннего кофе.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Каждый день&lt;/em&gt; - нужно определить каждый день или 5 дней в неделю (для рабочих задач). Причем разрешить себе не сделать завтра - можно, но нужно это разрешить заранее, а не в день, когда не успеваешь сделать, потому чот если решить не делать сегодня, то мозг засчитает это как провал дела. Для мозга неудача - путь к неудаче, а за успехом следует успех.&lt;/p&gt;
+
+&lt;p&gt;По мнению автора актуален для:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;разгребания рабочих завалов&lt;/li&gt;
+  &lt;li&gt;исправления дефектных систем&lt;/li&gt;
+  &lt;li&gt;запуск и поддержка проеков&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Tue, 09 Jul 2019 00:00:00 +0700</pubDate>
+        <link>http://localhost:4000//2019/07/09/forster-do_it_tomorrow.html</link>
+        <guid isPermaLink="true">http://localhost:4000//2019/07/09/forster-do_it_tomorrow.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Лекция Людвига &quot;Дизайн + 1&quot;</title>
+        <description>&lt;p&gt;Читал письмо из рассылки “Недиван”, решил послушать какую-нибудь лекцию Людвига. Наткнулся на эту:&lt;/p&gt;
+&lt;iframe width=&quot;560&quot; height=&quot;420&quot; src=&quot;http://www.youtube.com/embed/mkzTp6leeZA?color=white&amp;amp;theme=light&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Смыслы, который записал себе (в моей трактовке):&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;просто продолжай&lt;/strong&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;побывать самому заказчиком. Например, сделать друг другу визитки и понять какого это заказывать продукт. Заказчики не мудаки, а у них есть своя проф.деформация из-за которой они ведут себя так, как ведут и свои страхи&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;не бояться сказать клиенту, что дизайн еще будет дорабатываться и изменяться, если чтото пойдет не так (например, программисты скажут что не получается или плохо). Лучше сказать об этом и делать приятный продукт, которым будешь гордиться, а не лажу. Аналогично, если менеджер продал лажу, то надо идти и бороться за правду, а то иначе выйдет, что кто-то там сказал 50 слов, подписал договор, а все будут 1,5 года делать говно&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;обсудить с клиентом слабые места макета. Например, “если не будет возможности менять картинки, то все сольется в одно дерьмо“, и придумать как решить проблему&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;когда заказчик принимает дизайн, то дизайнер слышит слова однобрения “оо да, это все взлетит и сработает, спасибо чувак что пришел и дал нам это“, а клиент говорит “нууу я не знаю как должно быть , пусть будет так”. И поэтому так много хревого дизайна в мире. Поэтому, если клиент принял макет, то не значит что продажи вырастут, а пользователям будет удобно пользоваться сайтом&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;решить задачу, а не внедрить “да вот мой jpeg”&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;возьмите на поддержку проект на месяц бесплатно и придумывайте как решить там проблемы, это надо не им, а вам, потому что вам нужна обратная связь и понимать какие ваши решения рабоают, а какие - нет&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;надо перебирать и пробовать разные технологии/идеи/выриванты переговоров/варианты макетов&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;всегда понимать что за этим проектом есть следующий, поэтому может и нет смысла впихивать за 2 дня до релиза новую технологию. Понравился пример: это как хозяйка котороя варит борщ и ей принесли изюм: ох бля положить то некуда, полочки то нету, ну давай сюда прямо вали в борщ! у нас 6 киллограм, ну похер вали! Кастрюля разбухнет нахер&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;понимать где технология/продукт НЕ работает (где лэндинг не работает)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;не ждать вдохновения, а идти варить суп (просто продолжай). Круто уметь работать, когда все остальные не умеют.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;пока вы не побились за свою точку зрения - вы её не уважаете&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;чтобы генерить больше идей нужно положить в голову как можно больше информацции и идей, круто работают путешествие, хорошо работает другая специальность, например, начать писать музыку&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;постоянно надо усиливать сложность задач и прыгать выше. Потому что прыгать постоянно метр на трене - не интересно&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;начать делать изменения вокруг с себя: покрасить лестницу, выложить кафель в подьезде&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;в амстердаме все сделано херовасто и рукотворно и поэтому люди если делают чтото своими руками - смотрится круто и клево&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;глянуть книгу/статью Деривицкий тренинги продаж&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
 
 </description>
-        <pubDate>Sun, 10 Nov 2013 17:18:00 +0700</pubDate>
-        <link>http://localhost:4000//thriller/comedy/horror/2013/11/10/welcome-to-jekyll.html</link>
-        <guid isPermaLink="true">http://localhost:4000//thriller/comedy/horror/2013/11/10/welcome-to-jekyll.html</guid>
+        <pubDate>Sun, 13 Jan 2019 00:00:00 +0700</pubDate>
+        <link>http://localhost:4000//2019/01/13/ldwg-design-1-post.html</link>
+        <guid isPermaLink="true">http://localhost:4000//2019/01/13/ldwg-design-1-post.html</guid>
         
-        
-        <category>Thriller</category>
-        
-        <category>Comedy</category>
-        
-        <category>Horror</category>
         
       </item>
     

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-    <title>CHCHRN - Тимлид в Windy.app</title>
+    <title>CHCHRN - </title>
     <meta name="description" content="Andrey Chicherin, ios developer, teamlead, windy.app" />
 
     <meta name="HandheldFriendly" content="True" />
@@ -43,9 +43,7 @@
     <div class="extra-pagination inner">
         <nav class="pagination" role="pagination">
     
-    <span class="page-number"> Page 1 of 2 </span>
-     
-        <a class="older-posts" href="/page/" title="Next Page">Предыдушие посты &raquo;</a>
+    <span class="page-number"> Page 1 of 1 </span>
      
 </nav>
     </div>
@@ -59,24 +57,12 @@
         <section class="post-content">
             <p>При разработке любого приложения возникает потребность выводить отладочные логи в консоль. Это могут быть ошибки или просто детали выполнения приложения.</p>
 
-<p>Часто в коде используют просто <code class="language-plaintext highlighter-rouge">NSLog</code>/<code class="language-plaintext highlighter-rouge">print()</code>, но такое решение далеко от идеального. Есть популярная библиотека CocoaLumberjack. Долгое время я  использовал её, но всё логирование завязывается на статические методы или макросы, которые дергаются из любого метода/класса.</p>
+<p>Часто в коде используют просто <code class="language-plaintext highlighter-rouge">NSLog</code>/<code class="language-plaintext highlighter-rouge">print()</code>, но такое решение далеко от идеального. Есть популярная библиотека CocoaLumberjack. Долгое время я использовал её, но всё логирование завязывается на статические методы или макросы, которые дергаются из любого метода/класса.</p>
 
-<p>Это распространенный подход, но совсем не объектно-ориентированный и не очень расширяемый. Например, чтобы разделить потоки логов от разных подсистем - придется както завязывать на константы в лог-сообщениях. Либо создавать новые макросы/статические методы.</p>
+<p>Это распространенный подход, но совсем не объектно-ориентированный и не расширяемый. Чтобы разделить потоки логов от разных подсистем - придется както завязывать на константы в лог-сообщениях. Либо создавать новые макросы/статические методы.</p>
 
-<p>Напрашивается решение - передавать некоторый объект через который будут логироваться все сообщения. Если попытаться сделать это на основе CocoaLumberjack, то придется вызывать вот такой метод для логирования:</p>
+<p>Напрашивается решение - передавать некоторый объект через который будут логироваться все сообщения. Например, вот такой:</p>
 
-<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">-</span> <span class="p">(</span><span class="n">void</span><span class="p">)</span><span class="nv">log</span><span class="p">:(</span><span class="kt">BOOL</span><span class="p">)</span><span class="n">asynchronous</span>
-      <span class="nv">level</span><span class="p">:(</span><span class="kt">DDLogLevel</span><span class="p">)</span><span class="n">level</span>
-       <span class="nv">flag</span><span class="p">:(</span><span class="kt">DDLogFlag</span><span class="p">)</span><span class="n">flag</span>
-    <span class="nv">context</span><span class="p">:(</span><span class="kt">NSInteger</span><span class="p">)</span><span class="n">context</span>
-       <span class="nv">file</span><span class="p">:(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="p">)</span><span class="n">file</span>
-   <span class="nv">function</span><span class="p">:(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="p">)</span><span class="n">function</span>
-       <span class="nv">line</span><span class="p">:(</span><span class="kt">NSUInteger</span><span class="p">)</span><span class="n">line</span>
-        <span class="nv">tag</span><span class="p">:(</span><span class="n">id</span> <span class="n">__nullable</span><span class="p">)</span><span class="n">tag</span>
-     <span class="nv">format</span><span class="p">:(</span><span class="kt">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">format</span><span class="p">,</span> <span class="o">...</span> <span class="kt">NS_FORMAT_FUNCTION</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">);</span>
-</code></pre></div></div>
-
-<p>Не хотелось использовать по всему коду такой сложный метод. Интерфейс красивее может выглядеть вот так:</p>
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">WlgLogEvent</span> <span class="p">{</span>
     <span class="k">var</span> <span class="nv">level</span><span class="p">:</span> <span class="kt">WlgLogLevel</span> <span class="p">{</span><span class="k">get</span><span class="p">}</span>
     <span class="k">var</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span><span class="k">get</span><span class="p">}</span>
@@ -95,16 +81,15 @@
     <span class="kd">public</span> <span class="k">let</span> <span class="nv">level</span><span class="p">:</span> <span class="kt">WlgLogLevel</span>
     <span class="kd">public</span> <span class="k">let</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">String</span>
 
-    <span class="kd">@objc</span> <span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">level</span><span class="p">:</span> <span class="kt">WlgLogLevel</span><span class="p">,</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">level</span><span class="p">:</span> <span class="kt">WlgLogLevel</span><span class="p">,</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="n">level</span>
         <span class="k">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>Теперь, чтобы залогировать некоторые операции можно просто передавать инстанс класса реализующего <code class="language-plaintext highlighter-rouge">WlgLog</code></p>
+<p>Теперь, чтобы залогировать некоторые операции можно просто передавать инстанс класса реализующего <code class="language-plaintext highlighter-rouge">WlgLog</code>:</p>
 
-<p>Например, вот так:</p>
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">DownloadOperation</span> <span class="p">{</span>
     <span class="kd">private</span> <span class="k">let</span> <span class="nv">log</span><span class="p">:</span> <span class="kt">WldLog</span>
     <span class="nf">init</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="kt">URL</span><span class="p">,</span> <span class="nv">log</span><span class="p">:</span> <span class="kt">WldLog</span><span class="p">)</span> <span class="p">{</span>
@@ -117,7 +102,7 @@
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>Чтобы залогировать события можно реализовать интерфейс WlgLog через os_log, примерно вот так:</p>
+<p>Чтобы залогировать события можно создать класс <code class="language-plaintext highlighter-rouge">WlgOsLog</code>, который внутри себя будет использовать <code class="language-plaintext highlighter-rouge">os_log</code>, примерно вот так:</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">WlgOsLog</span><span class="p">:</span> <span class="kt">WlgLog</span> <span class="p">{</span>
     <span class="kd">private</span> <span class="k">let</span> <span class="nv">subsystem</span><span class="p">:</span> <span class="kt">String</span>
@@ -159,7 +144,7 @@
 
 <p>В этом коде можно инстанцировать <code class="language-plaintext highlighter-rouge">WlgOsLog</code> с конкретной подсистемой и категорией. Тем самым упростив анализ логов в Console.app. При этом ничего не мешает использовать декорирование логгеров. И например, написать логгер отправляющий ошибки в Sentry/Firebase.</p>
 
-<p>Чтобы не выводить ошибки в лог можно реализовать некоторый <code class="language-plaintext highlighter-rouge">WlgNullLog</code> , который не пишет никуда. Тогда в конструкторе объекта можно указывать дефолтную реализацию:</p>
+<p>Чтобы не выводить ошибки в лог потребуется <code class="language-plaintext highlighter-rouge">WlgNullLog</code>, который не пишет никуда. Тогда в конструкторе объекта можно указывать дефолтную реализацию:</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="kt">DownloadOperation</span> <span class="p">{</span>
     <span class="kd">private</span> <span class="k">let</span> <span class="nv">log</span><span class="p">:</span> <span class="kt">WldLog</span>
@@ -169,6 +154,7 @@
 <span class="p">}</span>
 </code></pre></div></div>
 
+<p>Такой подход реализован в библиотеке <a href="https://github.com/chchrn/wlog">Wlog</a></p>
 
         </section>
 <!--         <section class="post-excerpt">
@@ -189,11 +175,167 @@
 
     
 
+    <article class="post">
+        <header class="post-header">
+            <h2 class="post-title"><a href="/2019/07/09/forster-do_it_tomorrow.html">Форстер. Сделай это завтра</a></h2>
+        </header>
+        <section class="post-content">
+            <p><img src="./assets/images/forster-do_it_tomorrow/book.png" alt="" /></p>
+
+<ol>
+  <li>
+    <p>Прокачать “порядок”<br />
+<code class="language-plaintext highlighter-rouge">Эффективность = Творчество x Порядок   </code>  <br />
+Идея в том, что работать над творчеством можно, но сложнее. Порядок и организованность же можно прокачать до 10 довольно просто. Значит, что при творчество в 7 будет 70% эффективности.</p>
+  </li>
+  <li>
+    <p>Закрытые списки дел  <br />
+У большинства руководителей и предпренимателей огромные списки дел, до конца которых они не добираются. А значит что работа никогда не кончится и всегда будет ощущение, что ничего не успел. Выход - вести закрытые списки дел. Если возникают неотложные дела, которые нужно сделать обязательно сегодня, то они записываются под чертой закрытого списка. Остальные же дела записываются на завтра.</p>
+  </li>
+  <li>
+    <p>Порядок не важен <br />
+Приоритезация и списки дел с сортировкой по важности не умешьнают количество работы. Если работа из конца списка насколько неважна, что можно её не делать, то для чего её выполнять в принципе? Если делать придется, то какая разница в каком порядке делать дела? Идея в том, что если есть ограниченный пулл работы, то очень часто нет разницы в каком порядке её выполнять. А списки с “важными” пунктами не помогают справиться с проблемой, а только подталкивают взять на себя дополнительные обязательства.</p>
+  </li>
+  <li>
+    <p>Контрольный день <br />
+Полезное упражнение - взять контрольный день и посмотреть сколько работы поступает за день. нужно записывать кажду задачу, которую получаешь, вне зависимости выполянем её или нет. В конце дня надо оценить сколько работы поступает за день. Нужно понять что в среднем такое колво дел будет поступать каждый день и оценить способен ли справляться с ними.</p>
+  </li>
+  <li>
+    <p>Актуальная инициатива</p>
+    <blockquote>
+      <p>Чтобы двигаться вперед, необходимо выделять время на активные действия и проявление инициативы.</p>
+    </blockquote>
+  </li>
+</ol>
+
+<p>Каждый день должен начинать с одного дела, которое очень важно. Дело, к которому нужно приступать до дейли, разбора электронной почты и тд.</p>
+
+<ul>
+  <li>Делать</li>
+  <li>В первую очередь</li>
+  <li>Каждый день</li>
+</ul>
+
+<p><em>Делать</em> - нужно начинать и делать хотя бы 5 минут в день</p>
+
+<p><em>В первую очередь</em> - начинать делать в начале дня, до планерки, чтения почты, встречи с коллегами и распития утреннего кофе.</p>
+
+<p><em>Каждый день</em> - нужно определить каждый день или 5 дней в неделю (для рабочих задач). Причем разрешить себе не сделать завтра - можно, но нужно это разрешить заранее, а не в день, когда не успеваешь сделать, потому чот если решить не делать сегодня, то мозг засчитает это как провал дела. Для мозга неудача - путь к неудаче, а за успехом следует успех.</p>
+
+<p>По мнению автора актуален для:</p>
+<ul>
+  <li>разгребания рабочих завалов</li>
+  <li>исправления дефектных систем</li>
+  <li>запуск и поддержка проеков</li>
+</ul>
+
+        </section>
+<!--         <section class="post-excerpt">
+            <p><img src="./assets/images/forster-do_it_tomorrow/book.png" alt="" /></p>
+ <a class="read-more" href="/2019/07/09/forster-do_it_tomorrow.html">&raquo;</a>
+        </section> -->
+        <!-- <footer class="post-meta">
+            
+                <img class="author-thumb" src="/assets/images/profile.png" alt="Author's profile picture" nopin="nopin" />
+                Andrey Chicherin
+            
+            
+            <time class="post-date" datetime="2019-07-09">
+                09 Jul 2019
+            </time> 
+        </footer> -->
+    </article>
+
+    
+
+    <article class="post">
+        <header class="post-header">
+            <h2 class="post-title"><a href="/2019/01/13/ldwg-design-1-post.html">Лекция Людвига "Дизайн + 1"</a></h2>
+        </header>
+        <section class="post-content">
+            <p>Читал письмо из рассылки “Недиван”, решил послушать какую-нибудь лекцию Людвига. Наткнулся на эту:</p>
+<iframe width="560" height="420" src="http://www.youtube.com/embed/mkzTp6leeZA?color=white&amp;theme=light"></iframe>
+
+<p>Смыслы, который записал себе (в моей трактовке):</p>
+
+<ul>
+  <li>
+    <p><strong>просто продолжай</strong></p>
+  </li>
+  <li>
+    <p>побывать самому заказчиком. Например, сделать друг другу визитки и понять какого это заказывать продукт. Заказчики не мудаки, а у них есть своя проф.деформация из-за которой они ведут себя так, как ведут и свои страхи</p>
+  </li>
+  <li>
+    <p>не бояться сказать клиенту, что дизайн еще будет дорабатываться и изменяться, если чтото пойдет не так (например, программисты скажут что не получается или плохо). Лучше сказать об этом и делать приятный продукт, которым будешь гордиться, а не лажу. Аналогично, если менеджер продал лажу, то надо идти и бороться за правду, а то иначе выйдет, что кто-то там сказал 50 слов, подписал договор, а все будут 1,5 года делать говно</p>
+  </li>
+  <li>
+    <p>обсудить с клиентом слабые места макета. Например, “если не будет возможности менять картинки, то все сольется в одно дерьмо“, и придумать как решить проблему</p>
+  </li>
+  <li>
+    <p>когда заказчик принимает дизайн, то дизайнер слышит слова однобрения “оо да, это все взлетит и сработает, спасибо чувак что пришел и дал нам это“, а клиент говорит “нууу я не знаю как должно быть , пусть будет так”. И поэтому так много хревого дизайна в мире. Поэтому, если клиент принял макет, то не значит что продажи вырастут, а пользователям будет удобно пользоваться сайтом</p>
+  </li>
+  <li>
+    <p>решить задачу, а не внедрить “да вот мой jpeg”</p>
+  </li>
+  <li>
+    <p>возьмите на поддержку проект на месяц бесплатно и придумывайте как решить там проблемы, это надо не им, а вам, потому что вам нужна обратная связь и понимать какие ваши решения рабоают, а какие - нет</p>
+  </li>
+  <li>
+    <p>надо перебирать и пробовать разные технологии/идеи/выриванты переговоров/варианты макетов</p>
+  </li>
+  <li>
+    <p>всегда понимать что за этим проектом есть следующий, поэтому может и нет смысла впихивать за 2 дня до релиза новую технологию. Понравился пример: это как хозяйка котороя варит борщ и ей принесли изюм: ох бля положить то некуда, полочки то нету, ну давай сюда прямо вали в борщ! у нас 6 киллограм, ну похер вали! Кастрюля разбухнет нахер</p>
+  </li>
+  <li>
+    <p>понимать где технология/продукт НЕ работает (где лэндинг не работает)</p>
+  </li>
+  <li>
+    <p>не ждать вдохновения, а идти варить суп (просто продолжай). Круто уметь работать, когда все остальные не умеют.</p>
+  </li>
+  <li>
+    <p>пока вы не побились за свою точку зрения - вы её не уважаете</p>
+  </li>
+  <li>
+    <p>чтобы генерить больше идей нужно положить в голову как можно больше информацции и идей, круто работают путешествие, хорошо работает другая специальность, например, начать писать музыку</p>
+  </li>
+  <li>
+    <p>постоянно надо усиливать сложность задач и прыгать выше. Потому что прыгать постоянно метр на трене - не интересно</p>
+  </li>
+  <li>
+    <p>начать делать изменения вокруг с себя: покрасить лестницу, выложить кафель в подьезде</p>
+  </li>
+  <li>
+    <p>в амстердаме все сделано херовасто и рукотворно и поэтому люди если делают чтото своими руками - смотрится круто и клево</p>
+  </li>
+  <li>
+    <p>глянуть книгу/статью Деривицкий тренинги продаж</p>
+  </li>
+</ul>
+
+
+        </section>
+<!--         <section class="post-excerpt">
+            <p>Читал письмо из рассылки “Недиван”, решил послушать какую-нибудь лекцию Людвига. Наткнулся на эту:</p>
+<iframe width="560" height="420" src="http://www.youtube.com/embed/mkzTp6leeZA?color=white&amp;theme=light"></iframe>
+ <a class="read-more" href="/2019/01/13/ldwg-design-1-post.html">&raquo;</a>
+        </section> -->
+        <!-- <footer class="post-meta">
+            
+                <img class="author-thumb" src="/assets/images/profile.png" alt="Author's profile picture" nopin="nopin" />
+                Andrey Chicherin
+            
+            
+            <time class="post-date" datetime="2019-01-13">
+                13 Jan 2019
+            </time> 
+        </footer> -->
+    </article>
+
+    
+
     <nav class="pagination" role="pagination">
     
-    <span class="page-number"> Page 1 of 2 </span>
-     
-        <a class="older-posts" href="/page/" title="Next Page">Предыдушие посты &raquo;</a>
+    <span class="page-number"> Page 1 of 1 </span>
      
 </nav>
 
