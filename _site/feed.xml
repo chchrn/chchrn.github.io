@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000//</link>
     <atom:link href="http://localhost:4000//feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 25 Nov 2020 11:21:10 +0700</pubDate>
-    <lastBuildDate>Wed, 25 Nov 2020 11:21:10 +0700</lastBuildDate>
+    <pubDate>Wed, 25 Nov 2020 12:16:51 +0700</pubDate>
+    <lastBuildDate>Wed, 25 Nov 2020 12:16:51 +0700</lastBuildDate>
     <generator>Jekyll v4.1.1</generator>
     
       <item>
@@ -179,8 +179,13 @@
     
       <item>
         <title>Лекция Людвига &quot;Дизайн + 1&quot;</title>
-        <description>&lt;p&gt;Читал письмо из рассылки “Недиван”, решил послушать какую-нибудь лекцию Людвига. Наткнулся на эту:&lt;/p&gt;
-&lt;iframe width=&quot;560&quot; height=&quot;420&quot; src=&quot;http://www.youtube.com/embed/mkzTp6leeZA?color=white&amp;amp;theme=light&quot;&gt;&lt;/iframe&gt;
+        <description>&lt;p&gt;Читал письмо из рассылки “Недиван”, решил послушать какую-нибудь лекцию Людвига. Наткнулся на эту: 
+&lt;img src=&quot;https://www.youtube.com/watch?v=mkzTp6leeZA&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;embed-container&quot;&gt;
+  &lt;iframe src=&quot;https://www.youtube.com/embed/mkzTp6leeZA&quot; width=&quot;700&quot; height=&quot;480&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;
+  &lt;/iframe&gt;
+&lt;/div&gt;
 
 &lt;p&gt;Смыслы, который записал себе (в моей трактовке):&lt;/p&gt;
 

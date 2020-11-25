@@ -9,7 +9,7 @@ paginate: 15
 baseurl: /
 domain_name: "http://chchrn.com"
 google_analytics: "UA-XXXXXXXX-X"
-plugins: [jekyll-paginate jekyll-spaceship]
+plugins: [jekyll-paginate]
 
 telegram: chchrn
 email: a@chchrn.com
