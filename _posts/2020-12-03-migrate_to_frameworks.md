@@ -4,8 +4,6 @@ title:  "Переезд на frameworks"
 date:   2020-12-03
 ---
 
-# Про переезд на framework
-
 Долгое время у нас в проектах был общий код, который шарился между несколькими проектами. Всё время этот код был просто свалкой файлов, который мы подключали через git submodule в основной проект. Минусы такого подхода очевидны:
 
 1) тесты общего кода жили гдето в целевом проекте
@@ -36,7 +34,7 @@ date:   2020-12-03
 
 [Скрипт на gist](https://gist.github.com/chchrn/8ed1cf3ee02825310f23adf47a9d8310) 
 
-## Проблемы
+#### Проблемы
 
 **Framework Search Path**
 
@@ -46,7 +44,7 @@ date:   2020-12-03
 Была проблема в том, что в основном приложении есть Configurations отличные то Debug и Release, опытным путем выяснилось, что если проект подключен как подпроект, то в нем должны быть такие же схемы. Пришлось завести с либе схемы такие же как в основных приложениях
 
 
-## Refs
+#### Refs
 
 
 [https://stackoverflow.com/questions/34681435/how-to-add-a-framework-inside-another-framework-umbrella-framework/37553768](https://stackoverflow.com/questions/34681435/how-to-add-a-framework-inside-another-framework-umbrella-framework/37553768)
