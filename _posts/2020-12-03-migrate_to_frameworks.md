@@ -44,12 +44,8 @@ date:   2020-12-03
 #### Refs
 
 
-[https://stackoverflow.com/questions/34681435/how-to-add-a-framework-inside-another-framework-umbrella-framework/37553768](https://stackoverflow.com/questions/34681435/how-to-add-a-framework-inside-another-framework-umbrella-framework/37553768)
-
-[https://stackoverflow.com/questions/42771940/how-to-create-dynamic-framework-which-uses-another-framework](https://stackoverflow.com/questions/42771940/how-to-create-dynamic-framework-which-uses-another-framework)
-
-[https://stackoverflow.com/questions/51501424/creating-swift-framework-that-depends-on-another-framework-objc](https://stackoverflow.com/questions/51501424/creating-swift-framework-that-depends-on-another-framework-objc)
-
-[https://medium.com/freelancer-engineering/modular-architecture-on-ios-and-how-i-decreased-build-time-by-50-23c7666c6d2f](https://medium.com/freelancer-engineering/modular-architecture-on-ios-and-how-i-decreased-build-time-by-50-23c7666c6d2f)
-
-[https://tech.olx.com/modular-architecture-in-ios-c1a1e3bff8e9](https://tech.olx.com/modular-architecture-in-ios-c1a1e3bff8e9)
+1) [https://stackoverflow.com/questions/34681435/how-to-add-a-framework-inside-another-framework-umbrella-framework/37553768](https://stackoverflow.com/questions/34681435/how-to-add-a-framework-inside-another-framework-umbrella-framework/37553768)  
+2) [https://stackoverflow.com/questions/42771940/how-to-create-dynamic-framework-which-uses-another-framework](https://stackoverflow.com/questions/42771940/how-to-create-dynamic-framework-which-uses-another-framework)  
+3) [https://stackoverflow.com/questions/51501424/creating-swift-framework-that-depends-on-another-framework-objc](https://stackoverflow.com/questions/51501424/creating-swift-framework-that-depends-on-another-framework-objc)  
+4) [https://medium.com/freelancer-engineering/modular-architecture-on-ios-and-how-i-decreased-build-time-by-50-23c7666c6d2f](https://medium.com/freelancer-engineering/modular-architecture-on-ios-and-how-i-decreased-build-time-by-50-23c7666c6d2f)  
+5) [https://tech.olx.com/modular-architecture-in-ios-c1a1e3bff8e9](https://tech.olx.com/modular-architecture-in-ios-c1a1e3bff8e9)
