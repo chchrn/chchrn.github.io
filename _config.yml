@@ -8,7 +8,7 @@ logo: false
 paginate: 15
 baseurl: /
 domain_name: "http://chchrn.com"
-google_analytics: "UA-XXXXXXXX-X"
+google_analytics: "UA-132425776-1"
 plugins: [jekyll-paginate]
 
 telegram: chchrn
