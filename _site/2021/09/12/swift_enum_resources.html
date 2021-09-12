@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <title>CHCHRN - </title>
+    <meta name="description" content="Andrey Chicherin, ios developer, teamlead, windy.app" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css " />
+
+</head>
+<body class="home-template">
+
+    <header class="main-header post-head no-cover">
+    <nav class="main-nav  clearfix">
+        <a class="back-button icon-arrow-left" href="/">Home</a>
+        <a class="subscribe-button icon-feed" href="/feed.xml">Subscribe</a>
+    </nav>
+</header>
+
+<main class="content" role="main">
+
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Swift Enum - правильное использование ресурсов</h1>
+        </header>
+
+<!--         <header class="post-header">
+            <a id="blog-logo" href="http://localhost:4000">
+                
+                    <span class="blog-title">CHCHRN</span>
+                
+            </a>
+        </header> -->
+
+        <!-- <span class="post-meta">
+            <time datetime="2021-09-12">12 Sep 2021</time>
+            
+        </span> -->
+
+        <!-- <h1 class="post-title">Swift Enum - правильное использование ресурсов</h1> -->
+
+        <section class="post-content">
+            <p>Часто для значений из Enum-а требуется сопоставить или локализованную строку, чтобы показать на экране пользователю или иконку/картинку. <br />
+Встречаю такой код:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">enum</span> <span class="kt">LayerType</span> <span class="p">{</span>
+	<span class="k">case</span> <span class="n">wind</span>
+  <span class="k">case</span> <span class="n">swell</span>
+<span class="p">}</span>
+
+<span class="c1">// View слой (ViewController или Presentation слой)</span>
+<span class="k">var</span> <span class="nv">title</span> <span class="o">=</span> <span class="s">""</span>
+<span class="k">switch</span> <span class="n">layerType</span> <span class="p">{</span>
+   <span class="k">case</span> <span class="o">.</span><span class="nv">wind</span><span class="p">:</span> 
+       <span class="n">title</span> <span class="o">=</span> <span class="kt">NSLocalizedString</span><span class="p">(</span><span class="s">"layerType_wind"</span><span class="p">,</span> <span class="nv">comment</span><span class="p">:</span> <span class="s">""</span><span class="p">)</span>
+   <span class="k">case</span> <span class="o">.</span><span class="nv">swell</span><span class="p">:</span> 
+       <span class="n">title</span> <span class="o">=</span> <span class="kt">NSLocalizedString</span><span class="p">(</span><span class="s">"layerType_swell"</span><span class="p">,</span> <span class="nv">comment</span><span class="p">:</span> <span class="s">""</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Такой код становится сложно поддерживать, потому что при добавлении case-ов в Enum потребуется изменять код во всех местах где используется Enum. То есть ходить по всем ViewController или View и менять Switch.</p>
+
+<p>Код с зависимостью от <code class="language-plaintext highlighter-rouge">rawValue</code> еще хуже:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">enum</span> <span class="kt">LayerType</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span>
+	<span class="k">case</span> <span class="n">wind</span> <span class="o">=</span> <span class="s">"layerType_wind"</span>
+  <span class="k">case</span> <span class="n">swell</span> <span class="o">=</span> <span class="s">"layerType_swell"</span>
+<span class="p">}</span>
+
+<span class="c1">// View слой (ViewController или Presentation слой)</span>
+<span class="k">var</span> <span class="nv">title</span> <span class="o">=</span> <span class="kt">NSLocalizedString</span><span class="p">(</span><span class="n">layerType</span><span class="o">.</span><span class="n">rawValue</span><span class="p">,</span> <span class="nv">comment</span><span class="p">:</span> <span class="s">""</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Догадаться, что где-то во View-слое используется <code class="language-plaintext highlighter-rouge">rawValue</code> невозможно. К тому же при таком подходе не будет ошибки компиляции.</p>
+
+<p>Считаю, что лучше сделать отдельный Extension для Enum-а и все связанные ресурсы объявлять там. Например, вот так</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">enum</span> <span class="kt">LayerType</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">wind</span>
+    <span class="k">case</span> <span class="n">swell</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">LayerType</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">localizedTitle</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">map</span><span class="p">:</span> <span class="p">[</span><span class="kt">LayerType</span><span class="p">:</span> <span class="kt">String</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="o">.</span><span class="nv">wind</span><span class="p">:</span> <span class="s">"layerType_wind"</span><span class="p">,</span>
+            <span class="o">.</span><span class="nv">swell</span><span class="p">:</span> <span class="s">"layerType_swell"</span>
+        <span class="p">]</span>
+        <span class="k">guard</span> <span class="k">let</span> <span class="nv">locKey</span> <span class="o">=</span> <span class="n">map</span><span class="p">[</span><span class="k">self</span><span class="p">]</span> <span class="k">else</span> <span class="p">{</span><span class="k">return</span> <span class="s">"Undefined"</span><span class="p">}</span>
+        <span class="k">return</span> <span class="kt">NSLocalizedString</span><span class="p">(</span><span class="n">locKey</span><span class="p">,</span> <span class="nv">comment</span><span class="p">:</span> <span class="s">""</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// View слой (ViewController или Presentation слой)</span>
+<span class="k">let</span> <span class="nv">layerType</span> <span class="o">=</span> <span class="kt">LayerType</span><span class="o">.</span><span class="n">wind</span>
+<span class="k">var</span> <span class="nv">title</span> <span class="o">=</span> <span class="n">layerType</span><span class="o">.</span><span class="n">localizedTitle</span>
+</code></pre></div></div>
+
+<p>Таким образом все локализации и связанные картинки, видео будут объявляться в одном месте.</p>
+
+        </section>
+
+        <section class="post-meta">
+                
+                <time class="post-date" datetime="2021-09-12">12 Sep 2021</time>
+        </section>
+
+        
+
+        <footer class="post-footer">
+            <!-- If we want to display author's name and bio -->
+            <!-- 
+                <figure class="author-image">
+                    <a class="img" href="/" style="background-image: url(/assets/images/profile.png)">
+                    <span class="hidden">Andrey Chicherin's Picture</span></a>
+                </figure>
+                <section class="author">
+
+                    <h4> Andrey Chicherin </h4>
+
+                    <p>
+                        Here goes the author description. You might want to place some links too in here
+                    </p>
+                </section>
+             -->
+
+            <!-- Disqus comments -->
+            
+
+        </footer>
+
+    </article>
+
+</main>
+
+    <footer class="site-footer clearfix">
+      <section class="copyright">
+        <a href="/">CHCHRN</a> &copy; 
+              2021 &bull; All rights reserved.
+      </section>
+      <section class="poweredby">Made with Jekyll using 
+        <a href="http://github.com/rosario/kasper">Kasper theme</a>
+      </section>
+    </footer>
+    
+    <script type="text/javascript" src="/assets/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="/assets/js/index.js"></script>
+
+    <!-- Google Analytics Tracking code -->
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-132425776-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>   
+</body>
+</html>

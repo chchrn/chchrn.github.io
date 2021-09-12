@@ -52,6 +52,92 @@
 
     <article class="post">
         <header class="post-header">
+            <h2 class="post-title"><a href="/2021/09/12/swift_enum_resources.html">Swift Enum - правильное использование ресурсов</a></h2>
+        </header>
+        <!-- <section class="post-content">
+            <p>Часто для значений из Enum-а требуется сопоставить или локализованную строку, чтобы показать на экране пользователю или иконку/картинку. <br />
+Встречаю такой код:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">enum</span> <span class="kt">LayerType</span> <span class="p">{</span>
+	<span class="k">case</span> <span class="n">wind</span>
+  <span class="k">case</span> <span class="n">swell</span>
+<span class="p">}</span>
+
+<span class="c1">// View слой (ViewController или Presentation слой)</span>
+<span class="k">var</span> <span class="nv">title</span> <span class="o">=</span> <span class="s">""</span>
+<span class="k">switch</span> <span class="n">layerType</span> <span class="p">{</span>
+   <span class="k">case</span> <span class="o">.</span><span class="nv">wind</span><span class="p">:</span> 
+       <span class="n">title</span> <span class="o">=</span> <span class="kt">NSLocalizedString</span><span class="p">(</span><span class="s">"layerType_wind"</span><span class="p">,</span> <span class="nv">comment</span><span class="p">:</span> <span class="s">""</span><span class="p">)</span>
+   <span class="k">case</span> <span class="o">.</span><span class="nv">swell</span><span class="p">:</span> 
+       <span class="n">title</span> <span class="o">=</span> <span class="kt">NSLocalizedString</span><span class="p">(</span><span class="s">"layerType_swell"</span><span class="p">,</span> <span class="nv">comment</span><span class="p">:</span> <span class="s">""</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Такой код становится сложно поддерживать, потому что при добавлении case-ов в Enum потребуется изменять код во всех местах где используется Enum. То есть ходить по всем ViewController или View и менять Switch.</p>
+
+<p>Код с зависимостью от <code class="language-plaintext highlighter-rouge">rawValue</code> еще хуже:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">enum</span> <span class="kt">LayerType</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span>
+	<span class="k">case</span> <span class="n">wind</span> <span class="o">=</span> <span class="s">"layerType_wind"</span>
+  <span class="k">case</span> <span class="n">swell</span> <span class="o">=</span> <span class="s">"layerType_swell"</span>
+<span class="p">}</span>
+
+<span class="c1">// View слой (ViewController или Presentation слой)</span>
+<span class="k">var</span> <span class="nv">title</span> <span class="o">=</span> <span class="kt">NSLocalizedString</span><span class="p">(</span><span class="n">layerType</span><span class="o">.</span><span class="n">rawValue</span><span class="p">,</span> <span class="nv">comment</span><span class="p">:</span> <span class="s">""</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Догадаться, что где-то во View-слое используется <code class="language-plaintext highlighter-rouge">rawValue</code> невозможно. К тому же при таком подходе не будет ошибки компиляции.</p>
+
+<p>Считаю, что лучше сделать отдельный Extension для Enum-а и все связанные ресурсы объявлять там. Например, вот так</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">enum</span> <span class="kt">LayerType</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">wind</span>
+    <span class="k">case</span> <span class="n">swell</span>
+<span class="p">}</span>
+
+<span class="kd">extension</span> <span class="kt">LayerType</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">localizedTitle</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">map</span><span class="p">:</span> <span class="p">[</span><span class="kt">LayerType</span><span class="p">:</span> <span class="kt">String</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="o">.</span><span class="nv">wind</span><span class="p">:</span> <span class="s">"layerType_wind"</span><span class="p">,</span>
+            <span class="o">.</span><span class="nv">swell</span><span class="p">:</span> <span class="s">"layerType_swell"</span>
+        <span class="p">]</span>
+        <span class="k">guard</span> <span class="k">let</span> <span class="nv">locKey</span> <span class="o">=</span> <span class="n">map</span><span class="p">[</span><span class="k">self</span><span class="p">]</span> <span class="k">else</span> <span class="p">{</span><span class="k">return</span> <span class="s">"Undefined"</span><span class="p">}</span>
+        <span class="k">return</span> <span class="kt">NSLocalizedString</span><span class="p">(</span><span class="n">locKey</span><span class="p">,</span> <span class="nv">comment</span><span class="p">:</span> <span class="s">""</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// View слой (ViewController или Presentation слой)</span>
+<span class="k">let</span> <span class="nv">layerType</span> <span class="o">=</span> <span class="kt">LayerType</span><span class="o">.</span><span class="n">wind</span>
+<span class="k">var</span> <span class="nv">title</span> <span class="o">=</span> <span class="n">layerType</span><span class="o">.</span><span class="n">localizedTitle</span>
+</code></pre></div></div>
+
+<p>Таким образом все локализации и связанные картинки, видео будут объявляться в одном месте.</p>
+
+        </section> -->
+        <time class="post-date" datetime="2021-09-12">
+            12 Sep 2021
+        </time> 
+         <section class="post-excerpt">
+            <p>Часто для значений из Enum-а требуется сопоставить или локализованную строку, чтобы показать на экране пользователю или иконку/картинку. <br />
+Встречаю такой код:</p>
+
+
+            <br/>
+            <a class="read-more" href="/2021/09/12/swift_enum_resources.html">Читать полностью &raquo;</a>
+        </section>
+        <!-- <footer class="post-meta">
+            
+                <img class="author-thumb" src="/assets/images/profile.png" alt="Author's profile picture" nopin="nopin" />
+                Andrey Chicherin
+            
+            
+        </footer> -->
+    </article>
+
+    
+
+    <article class="post">
+        <header class="post-header">
             <h2 class="post-title"><a href="/2020/12/03/migrate_to_frameworks.html">Переезд на frameworks</a></h2>
         </header>
         <!-- <section class="post-content">
