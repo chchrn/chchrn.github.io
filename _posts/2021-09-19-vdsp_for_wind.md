@@ -81,7 +81,7 @@ iPhone 6s plus | 2000x2000 | 0.705 | 0.0442 | x15.95
 iPhone X | 2000x2000 |  |  |  
 iPhone 12 Pro | 2000x2000 |  |  |  
 
-Исходники теста: https://gist.github.com/chchrn/da4e69965f3c667b15c1a2eb7546400d
+Исходники теста [https://gist.github.com/chchrn/da4e69965f3c667b15c1a2eb7546400d]
 
 
 ### Refs
