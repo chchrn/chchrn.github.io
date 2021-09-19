@@ -50,6 +50,178 @@
 
     <article class="post">
         <header class="post-header">
+            <h2 class="post-title"><a href="/2021/09/19/vdsp_for_wind.html">DSP для отображения ветра</a></h2>
+        </header>
+        <!-- <section class="post-content">
+            <p><img src="/assets/images/2021-09-19-vdsp_for_wind/wind_whb.jpeg" alt="" width="100px" /></p>
+
+<p>Мы в приложении Windy.app показываем карту скорости ветра. Скорость ветра удобно представить в виде сетки, в узлах которой записаны значения.<br />
+Для сетки с шагом 0.25º данные в виде Float-ов займут <code class="language-plaintext highlighter-rouge">360 / 0.25 * 180 / 0. 25 * 4</code> = 4 Мб, а для UInt8-ов - 1 Мб. <br />
+И мы готовы пожертвовать точностью, в данном случае, потому что точности 40 м/с / 256 = 0.156 м/с - достаточно для представления скорости ветра.</p>
+
+<p>Не вдаваясь в детали передачи данных, рассмотрим что присходит на клиенте, когда массив Int-ов уже получен. Помимо самой матрицы с данными, клиент получает еще и <code class="language-plaintext highlighter-rouge">min</code> / <code class="language-plaintext highlighter-rouge">max</code>  оригинальных данных.</p>
+
+<p>Чтобы на клиенте получить Float-ы из UInt8 нужно сделать следующие операции:</p>
+<ol>
+  <li>посчитать шаг округления <code class="language-plaintext highlighter-rouge">step = (max - min) / 256</code></li>
+  <li>перевести UInt8 → Float</li>
+  <li>умножить значения на <code class="language-plaintext highlighter-rouge">step</code></li>
+  <li>прибавить <code class="language-plaintext highlighter-rouge">min</code></li>
+</ol>
+
+<p>Для примера рассмотрим матрицу 1000 x 1000, это 1млн точек. 
+Наивный алгоритм преобразования будет выглядеть следующим образом:</p>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">floatArray</span><span class="p">(</span><span class="nv">intValues</span><span class="p">:</span> <span class="p">[</span><span class="kt">UInt8</span><span class="p">],</span>
+                <span class="nv">min</span><span class="p">:</span> <span class="kt">Float</span><span class="p">,</span>
+                <span class="nv">max</span><span class="p">:</span> <span class="kt">Float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">Float</span><span class="p">]</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">step</span> <span class="o">=</span> <span class="p">(</span><span class="n">max</span> <span class="o">-</span> <span class="n">min</span><span class="p">)</span> <span class="o">/</span> <span class="mi">256</span>
+    <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">intValues</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span> <span class="p">(</span><span class="nv">v</span><span class="p">:</span> <span class="kt">UInt8</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Float</span> <span class="k">in</span>
+        <span class="k">return</span> <span class="kt">Float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">*</span> <span class="n">step</span> <span class="o">+</span> <span class="n">min</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">result</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>Время выполнения этого кода для матрицы 1000x1000 на iPhone 6s Plus - 160 мс.</p>
+
+<p>Казалось, что можно было сделать это быстрее. 
+Apple предоставляет  несколько механизмов для работы с массивами / матрицами чисел. Один из них - <a href="https://developer.apple.com/documentation/accelerate/vdsp">vDSP</a> во фреймворке Accelerate.<br />
+Вот код для такого же преобразования, но c использованием библиотеки vDSP:</p>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">floatArray</span><span class="p">(</span><span class="nv">intValues</span><span class="p">:</span> <span class="p">[</span><span class="kt">UInt8</span><span class="p">],</span>
+                <span class="nv">min</span><span class="p">:</span> <span class="kt">Float</span><span class="p">,</span>
+                <span class="nv">max</span><span class="p">:</span> <span class="kt">Float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">Float</span><span class="p">]</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">step</span> <span class="o">=</span> <span class="p">(</span><span class="n">max</span> <span class="o">-</span> <span class="n">min</span><span class="p">)</span> <span class="o">/</span> <span class="mi">256</span>
+    <span class="k">let</span> <span class="nv">count</span> <span class="o">=</span> <span class="n">intValues</span><span class="o">.</span><span class="n">count</span>
+    <span class="k">let</span> <span class="nv">stride</span> <span class="o">=</span> <span class="nf">vDSP_Stride</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">let</span> <span class="nv">n</span> <span class="o">=</span> <span class="nf">vDSP_Length</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+
+    <span class="k">var</span> <span class="nv">fltArray</span> <span class="o">=</span> <span class="p">[</span><span class="kt">Float</span><span class="p">](</span><span class="nv">repeating</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">count</span><span class="p">:</span> <span class="n">count</span><span class="p">)</span>
+    <span class="nf">vDSP_vfltu8</span><span class="p">(</span><span class="n">intValues</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span>
+                <span class="o">&amp;</span><span class="n">fltArray</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span>
+                <span class="n">n</span><span class="p">)</span>
+
+    <span class="k">var</span> <span class="nv">mulArray</span> <span class="o">=</span> <span class="p">[</span><span class="kt">Float</span><span class="p">](</span><span class="nv">repeating</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">count</span><span class="p">:</span> <span class="n">count</span><span class="p">)</span>
+    <span class="nf">vDSP_vsmul</span><span class="p">(</span><span class="n">fltArray</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span>
+               <span class="o">&amp;</span><span class="n">step</span><span class="p">,</span>
+               <span class="o">&amp;</span><span class="n">mulArray</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span>
+               <span class="n">n</span><span class="p">)</span>
+
+    <span class="k">var</span> <span class="nv">mMin</span> <span class="o">=</span> <span class="n">min</span>
+    <span class="k">var</span> <span class="nv">result</span> <span class="o">=</span> <span class="p">[</span><span class="kt">Float</span><span class="p">](</span><span class="nv">repeating</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">count</span><span class="p">:</span> <span class="n">count</span><span class="p">)</span>
+    <span class="nf">vDSP_vsadd</span><span class="p">(</span><span class="n">mulArray</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span>
+               <span class="o">&amp;</span><span class="n">mMin</span><span class="p">,</span>
+               <span class="o">&amp;</span><span class="n">result</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span>
+               <span class="n">n</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Ниже таблица с разницей скорости работы методов</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">Девайс</th>
+      <th style="text-align: center">Сетка</th>
+      <th style="text-align: center">Array, sec</th>
+      <th style="text-align: center">vDSP, sec</th>
+      <th style="text-align: center">Прирост</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">iPhone 6</td>
+      <td style="text-align: center">1000x1000</td>
+      <td style="text-align: center">0.269</td>
+      <td style="text-align: center">0.012</td>
+      <td style="text-align: center">x22.41</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">iPhone 6s plus</td>
+      <td style="text-align: center">1000x1000</td>
+      <td style="text-align: center">0.18</td>
+      <td style="text-align: center">0.0099</td>
+      <td style="text-align: center">x18.18</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">iPhone X</td>
+      <td style="text-align: center">1000x1000</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: center">iPhone 12 Pro</td>
+      <td style="text-align: center">1000x1000</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: center">iPhone 6</td>
+      <td style="text-align: center">2000x2000</td>
+      <td style="text-align: center">1.014</td>
+      <td style="text-align: center">0.051</td>
+      <td style="text-align: center">x19.88</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">iPhone 6s plus</td>
+      <td style="text-align: center">2000x2000</td>
+      <td style="text-align: center">0.705</td>
+      <td style="text-align: center">0.0442</td>
+      <td style="text-align: center">x15.95</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">iPhone X</td>
+      <td style="text-align: center">2000x2000</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: center">iPhone 12 Pro</td>
+      <td style="text-align: center">2000x2000</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="refs">Refs</h3>
+<p><a href="https://developer.apple.com/documentation/accelerate/vdsp">Документция Apple по vDSP</a> <br />
+<a href="https://devzone.nordicsemi.com/nordic/nordic-blog/b/blog/posts/nrf_2d00_connect_2d00_simd_2d00_optimizations_2d00_in_2d00_swift">Кейс для обработки сигналов для BLE</a></p>
+
+        </section> -->
+        <time class="post-date" datetime="2021-09-19">
+            19 Sep 2021
+        </time> 
+         <section class="post-excerpt">
+            <p><img src="/assets/images/2021-09-19-vdsp_for_wind/wind_whb.jpeg" alt="" width="100px" /></p>
+
+
+            <br/>
+            <a class="read-more" href="/2021/09/19/vdsp_for_wind.html">Читать полностью &raquo;</a>
+        </section>
+        <!-- <footer class="post-meta">
+            
+                <img class="author-thumb" src="/assets/images/profile.png" alt="Author's profile picture" nopin="nopin" />
+                Andrey Chicherin
+            
+            
+        </footer> -->
+    </article>
+
+    
+
+    <article class="post">
+        <header class="post-header">
             <h2 class="post-title"><a href="/2021/09/12/swift_enum_resources.html">Swift Enum - правильное использование ресурсов</a></h2>
         </header>
         <!-- <section class="post-content">
