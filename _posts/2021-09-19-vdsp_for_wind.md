@@ -73,12 +73,12 @@ func floatArray(intValues: [UInt8],
 :---: | :---: | :---: | :---: | :---:
 iPhone 6 | 1000x1000 | 0.269 | 0.012 | x22.41
 iPhone 6s plus | 1000x1000 | 0.18 | 0.0099 | x18.18
-iPhone X | 1000x1000 |  |  |  
+iPhone X | 1000x1000 | 0.202 | 0.0129 |  x15.65
 iPhone 12 Pro | 1000x1000 |  |  |  
  |  |  |  |  
 iPhone 6 | 2000x2000 | 1.014 | 0.051 | x19.88 |
 iPhone 6s plus | 2000x2000 | 0.705 | 0.0442 | x15.95
-iPhone X | 2000x2000 |  |  |  
+iPhone X | 2000x2000 | 0.789 | 0.0473 | x16.68  
 iPhone 12 Pro | 2000x2000 |  |  |  
 
 [Исходники теста](https://gist.github.com/chchrn/da4e69965f3c667b15c1a2eb7546400d)
