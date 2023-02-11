@@ -49,15 +49,16 @@
         <!-- <h1 class="post-title">DSP для отображения ветра</h1> -->
 
         <section class="post-content">
-            <p><img src="/assets/images/2021-09-19-vdsp_for_wind/wind_whb.jpeg" alt="" width="100px" /></p>
+            <p>Мы в приложении <a href="https://apps.apple.com/us/app/windy-app-wind-weather/id997079492">Windy.app</a> показываем карту скорости ветра. На примере этой задачи рассмотрим как можно на iPhone делать быстрые операции на матрицах.</p>
 
-<p>Мы в приложении Windy.app показываем карту скорости ветра. Скорость ветра удобно представить в виде сетки, в узлах которой записаны значения.<br />
-Для сетки с шагом 0.25º данные в виде Float-ов займут <code class="language-plaintext highlighter-rouge">360 / 0.25 * 180 / 0. 25 * 4</code> = 4 Мб, а для UInt8-ов - 1 Мб. <br />
-И мы готовы пожертвовать точностью, в данном случае, потому что точности 40 м/с / 256 = 0.156 м/с - достаточно для представления скорости ветра.</p>
+<p>Скорость ветра удобно представить в виде сетки, в узлах которой записаны значения.
+Для сетки с шагом 0.25º данные в виде Float-ов займут <code class="language-plaintext highlighter-rouge">360 / 0.25 * 180 / 0. 25 * 4 = 4 Мб</code> . 
+Если подумать то такая высокая точность для представления ветра нам не нужна. И должно было бы точности с размерностью UInt8, тогда общее кол-во данных можно было сократитить до 1 Мб. Для этого мы должны представить матрицу Float-ов в матрицу UInt8, для этого мы найдем min / max и просто равномерно переведем в UInt8. А на клиенте мы захотим перевести данные обратно, про это и будет статья.</p>
 
-<p>Не вдаваясь в детали передачи данных, рассмотрим что присходит на клиенте, когда массив Int-ов уже получен. Помимо самой матрицы с данными, клиент получает еще и <code class="language-plaintext highlighter-rouge">min</code> / <code class="language-plaintext highlighter-rouge">max</code>  оригинальных данных.</p>
+<p><img src="/assets/images/2021-09-19-vdsp_for_wind/wind_whb.jpeg" alt="" width="100px" /></p>
 
-<p>Чтобы на клиенте получить Float-ы из UInt8 нужно сделать следующие операции:</p>
+<p>Не будем обсуждать как именно мы получили данные, главное что у на клиенте теперь есть массив UInt8 и <code class="language-plaintext highlighter-rouge">min</code> / <code class="language-plaintext highlighter-rouge">max</code>  оригинальных данных.
+Чтобы на клиенте получить Float-ы из UInt8 нужно сделать следующие операции:</p>
 <ol>
   <li>посчитать шаг округления <code class="language-plaintext highlighter-rouge">step = (max - min) / 256</code></li>
   <li>перевести UInt8 → Float</li>
@@ -141,16 +142,9 @@ Apple предоставляет  несколько механизмов для
     <tr>
       <td style="text-align: center">iPhone X</td>
       <td style="text-align: center">1000x1000</td>
-      <td style="text-align: center"> </td>
-      <td style="text-align: center"> </td>
-      <td style="text-align: center"> </td>
-    </tr>
-    <tr>
-      <td style="text-align: center">iPhone 12 Pro</td>
-      <td style="text-align: center">1000x1000</td>
-      <td style="text-align: center"> </td>
-      <td style="text-align: center"> </td>
-      <td style="text-align: center"> </td>
+      <td style="text-align: center">0.202</td>
+      <td style="text-align: center">0.0129</td>
+      <td style="text-align: center">x15.65</td>
     </tr>
     <tr>
       <td style="text-align: center"> </td>
@@ -176,19 +170,14 @@ Apple предоставляет  несколько механизмов для
     <tr>
       <td style="text-align: center">iPhone X</td>
       <td style="text-align: center">2000x2000</td>
-      <td style="text-align: center"> </td>
-      <td style="text-align: center"> </td>
-      <td style="text-align: center"> </td>
-    </tr>
-    <tr>
-      <td style="text-align: center">iPhone 12 Pro</td>
-      <td style="text-align: center">2000x2000</td>
-      <td style="text-align: center"> </td>
-      <td style="text-align: center"> </td>
-      <td style="text-align: center"> </td>
+      <td style="text-align: center">0.789</td>
+      <td style="text-align: center">0.0473</td>
+      <td style="text-align: center">x16.68</td>
     </tr>
   </tbody>
 </table>
+
+<p><a href="https://gist.github.com/chchrn/da4e69965f3c667b15c1a2eb7546400d">Исходники теста</a></p>
 
 <h3 id="refs">Refs</h3>
 <p><a href="https://developer.apple.com/documentation/accelerate/vdsp">Документция Apple по vDSP</a> <br />
@@ -203,9 +192,9 @@ Apple предоставляет  несколько механизмов для
 
         
 
-        <footer class="post-footer">
-            <!-- If we want to display author's name and bio -->
-            <!-- 
+<!--         <footer class="post-footer">
+            
+            
                 <figure class="author-image">
                     <a class="img" href="/" style="background-image: url(/assets/images/profile.png)">
                     <span class="hidden">Andrey Chicherin's Picture</span></a>
@@ -218,13 +207,12 @@ Apple предоставляет  несколько механизмов для
                         Here goes the author description. You might want to place some links too in here
                     </p>
                 </section>
-             -->
+            
 
-            <!-- Disqus comments -->
             
 
         </footer>
-
+ -->
     </article>
 
 </main>
@@ -232,7 +220,7 @@ Apple предоставляет  несколько механизмов для
     <footer class="site-footer clearfix">
       <section class="copyright">
         <a href="/">CHCHRN</a> &copy; 
-              2021 &bull; All rights reserved.
+              2023 &bull; All rights reserved.
       </section>
       <section class="poweredby">Made with Jekyll using 
         <a href="http://github.com/rosario/kasper">Kasper theme</a>
